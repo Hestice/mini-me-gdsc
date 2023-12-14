@@ -1,5 +1,6 @@
 import Experience from "./Experience";
 import * as THREE from "three";
+import GSAP from "gsap"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 
 export default class Camera {
@@ -9,9 +10,16 @@ export default class Camera {
         this.scene = this.experience.scene;
         this.canvas = this.experience.canvas;
 
+        this.lerp = {
+            current: { x: 0, y: 0 },
+            target: { x: 0, y: 0 },
+            ease: 0.1,
+        };
+
+        this.onMouseMove();
         this.createPerspectiveCamera();
         this.createOrthographicCamera();
-        this.setOrbitControls();
+        // this.setOrbitControls();
     }
 
     createPerspectiveCamera(){
@@ -44,6 +52,13 @@ export default class Camera {
         this.controls.enableZoom = true;
     }
 
+    onMouseMove() {
+        window.addEventListener("mousemove", (e) => {
+            this.lerp.target.x = ((e.clientY - window.innerHeight / 2) * 2) / window.innerHeight *0.02;
+            this.lerp.target.y = ((e.clientX - window.innerWidth / 2) * 2) / window.innerWidth *0.02;
+        });
+    }
+
     resize() {
         // Updating Perspective Camera on Resize
         this.perspectiveCamera.aspect = this.sizes.aspect;
@@ -59,7 +74,29 @@ export default class Camera {
         this.orthographicCamera.updateProjectionMatrix();
     }
     
-    update(){
-        this.controls.update();    
+    update() {
+        // this.controls.update();
+
+        this.lerp.current.x = GSAP.utils.interpolate(
+            this.lerp.current.x,
+            this.lerp.target.x,
+            this.lerp.ease
+        );
+        this.lerp.current.y = GSAP.utils.interpolate(
+            this.lerp.current.y,
+            this.lerp.target.y,
+            this.lerp.ease
+        );
+
+        // Limiting the rotation values to prevent extreme values
+        const maxRotationX = Math.PI / 4;
+        this.lerp.current.x = THREE.MathUtils.clamp(
+            this.lerp.current.x,
+            -maxRotationX,
+            maxRotationX
+        );
+
+        this.perspectiveCamera.rotation.x = -this.lerp.current.x;
+        this.perspectiveCamera.rotation.y = -this.lerp.current.y;
     }
 }

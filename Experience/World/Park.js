@@ -72,20 +72,20 @@ export default class Park{
             this.lerp.ease
         );
 
-        this.actualPark.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-                // Customize this based on your requirements
-                if(child.name !== "Plane"&&
-                child.name !== "Plane001"&&
-                child.name !== "Plane002"&&
-                child.name !== "Plane003"&&
-                child.name !== "Mountain"
-                ){
-                    child.rotation.y = this.lerp.current;
-                }
+        // this.actualPark.traverse((child) => {
+        //     if (child instanceof THREE.Mesh) {
+        //         // Customize this based on your requirements
+        //         if(child.name !== "Plane"&&
+        //         child.name !== "Plane001"&&
+        //         child.name !== "Plane002"&&
+        //         child.name !== "Plane003"&&
+        //         child.name !== "Mountain"
+        //         ){
+        //             child.rotation.y = this.lerp.current;
+        //         }
                 
-            }
-        });
+        //     }
+        // });
 
         // this.mixer.update(this.time.delta * 0.002);
     }
