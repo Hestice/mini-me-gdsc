@@ -30,7 +30,9 @@ export default class Camera {
             100
         )
         this.scene.add(this.perspectiveCamera);
-        this.perspectiveCamera.position.z = 5;
+        this.perspectiveCamera.position.z = 5.5;
+        this.perspectiveCamera.position.y = 2;
+        this.perspectiveCamera.rotation.x = -0.25;
     }
 
     createOrthographicCamera(){
@@ -75,28 +77,31 @@ export default class Camera {
     }
     
     update() {
-        // this.controls.update();
+    // this.controls.update();
 
-        this.lerp.current.x = GSAP.utils.interpolate(
-            this.lerp.current.x,
-            this.lerp.target.x,
-            this.lerp.ease
-        );
-        this.lerp.current.y = GSAP.utils.interpolate(
-            this.lerp.current.y,
-            this.lerp.target.y,
-            this.lerp.ease
-        );
+    this.lerp.current.x = GSAP.utils.interpolate(
+        this.lerp.current.x,
+        this.lerp.target.x,
+        this.lerp.ease
+    );
+    this.lerp.current.y = GSAP.utils.interpolate(
+        this.lerp.current.y,
+        this.lerp.target.y,
+        this.lerp.ease
+    );
 
-        // Limiting the rotation values to prevent extreme values
-        const maxRotationX = Math.PI / 4;
-        this.lerp.current.x = THREE.MathUtils.clamp(
-            this.lerp.current.x,
-            -maxRotationX,
-            maxRotationX
-        );
+    // Limiting the rotation values to prevent extreme values
+    const maxRotationX = Math.PI / 4;
+    this.lerp.current.x = THREE.MathUtils.clamp(
+        this.lerp.current.x,
+        -maxRotationX,
+        maxRotationX
+    );
+    const initialRotationX = -0.25; // Your initial rotation value
 
-        this.perspectiveCamera.rotation.x = -this.lerp.current.x;
-        this.perspectiveCamera.rotation.y = -this.lerp.current.y;
-    }
+    // Combine both X and Y rotations
+    this.perspectiveCamera.rotation.x = initialRotationX - this.lerp.current.x;
+    this.perspectiveCamera.rotation.y = -this.lerp.current.y;
+}
+
 }
